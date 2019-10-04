@@ -1,19 +1,22 @@
 import requests
 
-# base request - http://climatedataapi.worldbank.org/climateweb/rest/v1/country/type/var/start/end/ISO3[.ext]
+base_request = "http://climatedataapi.worldbank.org/climateweb/rest/v1/country/"
 
 class ClimateBank(object):
-    def __init__(self, type, var, start, end, ISO3):
-        self.type = "annualavg"
-        self.var = "pr"
-        self.start = 1980
-        self.end = 2020
-        self.ISO3 = "USA"
+    def __init__(self, type, var, start, end, country):
+        self.type = type
+        self.var = var
+        self.start = start
+        self.end = end
+        self.country = country
 
-    def get_data():
-        pass
+    def fetch(self):
+        return requests.get(f"{base_request}/{self.type}/{self.var}/{self.start}/{self.end}/{self.country}.json")
 
 
-response = requests.get("http://climatedataapi.worldbank.org/climateweb/rest/v1/country/annualavg/pr/1980/1999/USA.json")
-print(response.status_code)
-print(response.content)    
+
+annual_average_rainfall = ClimateBank("annualavg", "pr", 1980, 1999, "USA")
+data = annual_average_rainfall.fetch()
+print(data.status_code)
+print(data.content)
+print(data.text)
