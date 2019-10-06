@@ -10,10 +10,14 @@ class ClimateBank(object):
         self.end = end
         self.country = country
 
-    def fetch(self):
+    def json(self):
         return requests.get(f"{base_request}/{self.type}/{self.var}/{self.start}/{self.end}/{self.country}.json")
 
+    def dask(self):
+        pass
 
+    def panda(self):
+        pass
 
 annual_average_rainfall = ClimateBank("annualavg", "pr", 1980, 1999, "USA")
 data = annual_average_rainfall.fetch()
