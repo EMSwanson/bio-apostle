@@ -1,4 +1,6 @@
 import requests
+import dask.dataframe as dd
+import pandas as pd
 
 
 class DataFetcher(object):
@@ -9,13 +11,9 @@ class DataFetcher(object):
     def get(self):
         return requests.get(self.request_to_format)
 
-    def dask(self):
-        pass
-        #Call  self.get(request_to_format) then convert to dask df
-
     def pandas(self):
-        pass
-        #Call self.get(request_to_format) then convert to pandas df
+        json_response = self.get()
+        return pd.read_json(json_response.text, orient = 'records')
 
 
 class ClimateBank(DataFetcher):
@@ -31,8 +29,16 @@ class ClimateBank(DataFetcher):
         self.request_to_format = f"{self.base_request}/{self.type}/{self.var}/{self.start}/{self.end}/{self.country}.json"
 
 
-annual_average_rainfall = ClimateBank(type = "annualavg", var = "pr", start = 1980, end = 1999, country = "USA")
-data = annual_average_rainfall.get()
-print(data.status_code)
-print(data.content)
-print(data.text)
+def main():
+    annual_average_rainfall = ClimateBank(type = "annualavg", var = "pr", start = 1980, end = 1999, country = "USA")
+    data = annual_average_rainfall.get()
+    print(data.status_code)
+    print(data.content)
+    print(data.text)
+    
+    pd_data = annual_average_rainfall.pandas()
+    print(pd_data)
+
+
+if __name__ == "__main__":
+    main()
